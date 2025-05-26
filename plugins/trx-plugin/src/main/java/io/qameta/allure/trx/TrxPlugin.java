@@ -92,6 +92,9 @@ public class TrxPlugin implements Reader {
     public static final String STACK_TRACE_ELEMENT_NAME = "StackTrace";
     public static final String ERROR_INFO_ELEMENT_NAME = "ErrorInfo";
     public static final String STDOUT_ELEMENT_NAME = "StdOut";
+    public static final String RESULT_FILES_ELEMENT_NAME = "ResultFiles";
+    public static final String RESULT_FILE_ELEMENT_NAME = "ResultFile";
+
 
     @Override
     public void readResults(final Configuration configuration,
@@ -193,6 +196,7 @@ public class TrxPlugin implements Reader {
                 .setTime(getTime(startTime, endTime));
         getStatusMessage(unitTestResult).ifPresent(result::setStatusMessage);
         getStatusTrace(unitTestResult).ifPresent(result::setStatusTrace);
+        getAttachments(unitTestResult).ifPresent(result::setAttachments);
         getLogMessage(unitTestResult).ifPresent(logMessage -> {
             final List<String> lines = splitLines(logMessage);
             final List<Step> steps = lines
@@ -291,6 +295,14 @@ public class TrxPlugin implements Reader {
                 .map(XmlElement::getValue);
     }
 
+    private Optional<List<String>> getAttachments(final XmlElement unitTestResult) {
+        return unitTestResult.getFirst(OUTPUT_ELEMENT_NAME)
+                .flatMap(output -> output.getFirst(RESULT_FILES_ELEMENT_NAME))
+                .map(resultFiles -> resultFiles.get(RESULT_FILE_ELEMENT_NAME)
+                .stream()
+                .map(XmlElement::getValue)
+                .collect(Collectors.toList()));
+    }
     private Time getTime(final String startTime, final String endTime) {
         final Time time = new Time();
         parseTime(startTime).ifPresent(time::setStart);
