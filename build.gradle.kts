@@ -207,7 +207,7 @@ subprojects {
     spotless {
         java {
             target("src/**/*.java")
-            removeUnusedImports()
+            // removeUnusedImports()
             importOrder("", "jakarta", "javax", "java", "\\#")
             licenseHeader(file("$spotlessDtr/allure.java.license").readText(UTF_8))
             endWithNewline()

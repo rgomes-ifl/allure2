@@ -94,6 +94,7 @@ public class TrxPlugin implements Reader {
     public static final String STDOUT_ELEMENT_NAME = "StdOut";
     public static final String RESULT_FILES_ELEMENT_NAME = "ResultFiles";
     public static final String RESULT_FILE_ELEMENT_NAME = "ResultFile";
+    public static final String PATH_ATTRIBUTE = "path";
 
 
     @Override
@@ -300,7 +301,8 @@ public class TrxPlugin implements Reader {
                 .flatMap(output -> output.getFirst(RESULT_FILES_ELEMENT_NAME))
                 .map(resultFiles -> resultFiles.get(RESULT_FILE_ELEMENT_NAME)
                 .stream()
-                .map(XmlElement::getValue)
+                .map(file -> file.getAttribute(PATH_ATTRIBUTE))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
     }
     private Time getTime(final String startTime, final String endTime) {
