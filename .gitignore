@@ -26,3 +26,5 @@ npm-debug.log
 
 #Mac OS stuff
 .DS_Store
+bin
+.vscode
